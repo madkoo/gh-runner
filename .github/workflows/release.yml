@@ -12,7 +12,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      
+      - name: Ensure tag exists for git describe
+        run: |
+          # Check if any tags exist in the repository
+          if ! git tag | grep -q .; then
+            echo "No tags found, creating a temporary tag to prevent git describe failure"
+            git tag v0.0.0-dev
+          else
+            echo "Tags already exist in the repository"
+          fi
+      
       - uses: cli/gh-extension-precompile@v2
         with:
           go_version_file: go.mod
