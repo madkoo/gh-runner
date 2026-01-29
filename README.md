@@ -516,10 +516,13 @@ gh-runner/
 ├── go.mod               # Go module dependencies
 ├── go.sum               # Dependency checksums
 ├── Makefile             # Build automation
-├── Dockerfile           # Linux runner Docker image
-├── Dockerfile.windows   # Windows runner Docker image
-├── entrypoint.sh        # Linux container entrypoint
-├── entrypoint.ps1       # Windows container entrypoint
+├── runners/             # Runner Docker configurations
+│   ├── linux/           # Linux runner files
+│   │   ├── Dockerfile   # Ubuntu-based runner image
+│   │   └── entrypoint.sh
+│   └── windows/         # Windows runner files
+│       ├── Dockerfile   # Windows Server Core runner image
+│       └── entrypoint.ps1
 ├── README.md            # This file
 ├── QUICKSTART.md        # Quick start guide
 ├── LICENSE              # MIT license

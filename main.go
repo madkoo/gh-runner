@@ -196,14 +196,15 @@ func runDockerRunner(runnerURL, token, runnerName string) error {
 	if err := exec.Command("docker", "version").Run(); err != nil {
 		return fmt.Errorf("Docker is not available. Please install Docker first")
 	}
-var imageName, dockerfileName string
+
+	var imageName, runnerDir string
 	if useWindows {
 		imageName = "gh-runner-windows:latest"
-		dockerfileName = "Dockerfile.windows"
+		runnerDir = "runners/windows"
 		fmt.Println("🪟 Using Windows runner configuration")
 	} else {
 		imageName = "gh-runner:latest"
-		dockerfileName = "Dockerfile"
+		runnerDir = "runners/linux"
 		fmt.Println("🐧 Using Linux runner configuration (slim Ubuntu image)")
 	}
 	
@@ -213,21 +214,22 @@ var imageName, dockerfileName string
 		fmt.Println("📦 Building runner image from official GitHub Actions runner binaries...")
 		fmt.Println("   (This may take a few minutes on first run)")
 		
-		// Get the directory where the Dockerfile is located (same as binary)
+		// Get the directory where the extension is installed
 		exePath, err := os.Executable()
 		if err != nil {
 			return fmt.Errorf("failed to get executable path: %w", err)
 		}
 		
-		dockerfileDir := filepath.Dir(exePath)
-		dockerfilePath := filepath.Join(dockerfileDir, dockerfileName)
+		extensionDir := filepath.Dir(exePath)
+		runnerPath := filepath.Join(extensionDir, runnerDir)
+		dockerfilePath := filepath.Join(runnerPath, "Dockerfile")
 		
 		// Check if Dockerfile exists
 		if _, err := os.Stat(dockerfilePath); os.IsNotExist(err) {
 			return fmt.Errorf("Dockerfile not found at %s. Please ensure the extension is properly installed", dockerfilePath)
 		}
 		
-		buildCmd := exec.Command("docker", "build", "-t", imageName, "-f", dockerfilePath, dockerfileDir)
+		buildCmd := exec.Command("docker", "build", "-t", imageName, runnerPath)
 		buildCmd.Stdout = os.Stdout
 		buildCmd.Stderr = os.Stderr
 		
