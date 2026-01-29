@@ -4,6 +4,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to create (e.g., v1.0.0)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -16,15 +21,13 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Ensure tag exists for git describe
+      - name: Create and push tag
+        if: github.event_name == 'workflow_dispatch'
         run: |
-          # Check if any tags exist in the repository
-          if ! git tag | grep -q .; then
-            echo "No tags found, creating a temporary tag to prevent git describe failure"
-            git tag v0.0.0-dev
-          else
-            echo "Tags already exist in the repository"
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ inputs.version }}
+          git push origin ${{ inputs.version }}
       
       - uses: cli/gh-extension-precompile@v2
         with:
