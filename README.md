@@ -63,14 +63,14 @@ You need **admin access** to the repository, organization, or enterprise where y
 ### Method 1: Install from GitHub (Recommended)
 
 ```bash
-gh extension install madiskoosaar/gh-runner
+gh extension install madkoo/gh-runner
 ```
 
 ### Method 2: Install Locally
 
 ```bash
 # Clone the repository
-git clone https://github.com/madiskoosaar/gh-runner.git
+git clone https://github.com/madkoo/gh-runner.git
 cd gh-runner
 
 # Install the extension
@@ -81,7 +81,7 @@ gh extension install .
 
 ```bash
 # Clone and build
-git clone https://github.com/madiskoosaar/gh-runner.git
+git clone https://github.com/madkoo/gh-runner.git
 cd gh-runner
 make build
 
@@ -389,7 +389,7 @@ We welcome contributions! Here's how you can help:
 
 ### Reporting Bugs
 
-1. Check if the issue already exists in [Issues](https://github.com/madiskoosaar/gh-runner/issues)
+1. Check if the issue already exists in [Issues](https://github.com/madkoo/gh-runner/issues)
 2. If not, create a new issue with:
    - Clear description of the problem
    - Steps to reproduce
@@ -406,7 +406,7 @@ We welcome contributions! Here's how you can help:
 
 1. **Fork the repository**
    ```bash
-   gh repo fork madiskoosaar/gh-runner --clone
+   gh repo fork madkoo/gh-runner --clone
    cd gh-runner
    ```
 
@@ -449,7 +449,7 @@ We welcome contributions! Here's how you can help:
 
 ```bash
 # Clone the repo
-git clone https://github.com/madiskoosaar/gh-runner.git
+git clone https://github.com/madkoo/gh-runner.git
 cd gh-runner
 
 # Install dependencies
@@ -558,7 +558,7 @@ gh extension remove runner
 - ⏳ Runner monitoring and alerts
 
 ### Contributing Ideas
-Have an idea? [Open an issue](https://github.com/madiskoosaar/gh-runner/issues/new) or submit a PR!
+Have an idea? [Open an issue](https://github.com/madkoo/gh-runner/issues/new) or submit a PR!
 
 ## FAQ
 
@@ -600,8 +600,8 @@ gh runner add repo/owner/repo --docker --name new-name
 ## Support
 
 - 📖 [Quick Start Guide](QUICKSTART.md)
-- 💬 [GitHub Discussions](https://github.com/madiskoosaar/gh-runner/discussions)
-- 🐛 [Report Issues](https://github.com/madiskoosaar/gh-runner/issues)
+- 💬 [GitHub Discussions](https://github.com/madkoo/gh-runner/discussions)
+- 🐛 [Report Issues](https://github.com/madkoo/gh-runner/issues)
 - 📧 Contact the maintainer
 
 ## License
@@ -644,4 +644,4 @@ If you find this project useful, please consider giving it a ⭐!
 
 ---
 
-**Made with ❤️ by [Madis Koosaar](https://github.com/madiskoosaar)**
+**Made with ❤️ by [Madis Koosaar](https://github.com/madkoo)**
