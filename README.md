@@ -245,7 +245,7 @@ jobs:
     runs-on: [self-hosted, linux, x64]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Build
         run: make build

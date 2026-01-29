@@ -112,6 +112,6 @@ Coming soon:
      build:
        runs-on: [self-hosted, linux, gpu]
        steps:
-         - uses: actions/checkout@v4
+         - uses: actions/checkout@v6
          - run: echo "Running on self-hosted runner!"
    ```
