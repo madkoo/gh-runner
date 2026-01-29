@@ -12,8 +12,8 @@ The `gh-runner` extension uses GitHub Actions to automatically build and publish
 
 Follow [Semantic Versioning](https://semver.org/):
 - **MAJOR** version for incompatible API changes
-- **MINOR** version for new functionality in a backwards compatible manner
-- **PATCH** version for backwards compatible bug fixes
+- **MINOR** version for new functionality in a backward-compatible manner
+- **PATCH** version for backward-compatible bug fixes
 
 Example: `v1.0.0`, `v1.1.0`, `v1.1.1`
 
