@@ -39,9 +39,11 @@
 - ✅ **Simple CLI** - Add runners with a single command
 - ✅ **Multiple Scopes** - Support for repositories, organizations, and enterprises
 - ✅ **Docker Integration** - Automatically deploy runners in Docker containers
+- ✅ **Windows Support** - Deploy Windows runners with `--windows` flag
 - ✅ **Custom Configuration** - Set custom names and labels
 - ✅ **Secure** - Uses GitHub CLI authentication and token management
 - ✅ **Cross-Platform** - Works on Linux, macOS, and Windows
+- ✅ **Official Runner Binaries** - Uses official GitHub Actions runner directly
 - ⏳ **Kubernetes Support** - Coming soon for k8s/minikube deployments
 
 ## Prerequisites
@@ -102,12 +104,12 @@ gh runner --help
 #### Add a Runner to a Repository
 
 ```bash
-gh runner add repo/OWNER/REPO-NAME --docker
+gh runner add OWNER/REPO --docker
 ```
 
 Example:
 ```bash
-gh runner add repo/madiskoosaar/my-private-repo --docker
+gh runner add mycompany/my-private-repo --docker
 ```
 
 #### Add a Runner to an Organization
@@ -137,13 +139,13 @@ gh runner add enterprise/my-enterprise --docker
 #### Custom Runner Name
 
 ```bash
-gh runner add repo/owner/repo --docker --name production-runner-01
+gh runner add owner/repo --docker --name production-runner-01
 ```
 
 #### Add Custom Labels
 
 ```bash
-gh runner add repo/owner/repo --docker --labels linux,x64,gpu,cuda,large-disk
+gh runner add owner/repo --docker --labels linux,x64,gpu,cuda,large-disk
 ```
 
 Labels help you target specific runners in your workflows:
@@ -161,10 +163,21 @@ gh runner add org/myorg --docker \
   --labels linux,x64,gpu,nvidia-rtx-4090,128gb-ram
 ```
 
+#### Windows Runner
+
+```bash
+gh runner add myorg/myrepo --docker --windows
+```
+
+**Note:** Windows containers require:
+- Docker Desktop with Windows containers enabled
+- Running on a Windows host
+- Switch to Windows containers via Docker Desktop settings
+
 #### Manual Setup (Without Docker)
 
 ```bash
-gh runner add repo/owner/repo
+gh runner add owner/repo
 ```
 
 This displays manual installation instructions with the registration token.
@@ -174,7 +187,7 @@ This displays manual installation instructions with the registration token.
 ### Example 1: Quick Docker Runner for a Private Repo
 
 ```bash
-gh runner add repo/mycompany/private-api --docker
+gh runner add mycompany/private-api --docker
 ```
 
 Output:
@@ -184,8 +197,10 @@ Output:
 ✓ Target: mycompany/private-api
 
 🐳 Setting up Docker runner...
+🐧 Using Linux runner configuration (slim Ubuntu image)
 ✓ Docker container started: gh-runner-MacBook-Pro
 ✓ Runner name: MacBook-Pro
+✓ Platform: Linux
 
 To view logs: docker logs -f gh-runner-MacBook-Pro
 To stop: docker stop gh-runner-MacBook-Pro
@@ -203,12 +218,20 @@ gh runner add org/myorg --docker \
 ### Example 3: Development Runner
 
 ```bash
-gh runner add repo/myuser/test-project --docker \
+gh runner add myuser/test-project --docker \
   --name dev-runner \
   --labels linux,x64,development
 ```
 
-### Example 4: Using the Runner in a Workflow
+### Example 4: Windows Runner
+
+```bash
+gh runner add mycompany/windows-app --docker --windows \
+  --name windows-runner \
+  --labels windows,x64,dotnet
+```
+
+### Example 5: Using the Runner in a Workflow
 
 After adding your runner, use it in `.github/workflows/ci.yml`:
 
@@ -249,7 +272,7 @@ jobs:
 │   (User)    │
 └──────┬──────┘
        │
-       │ gh runner add repo/owner/repo --docker
+       │ gh runner add owner/repo --docker
        │
 ┌──────▼──────────┐
 │   gh-runner     │
@@ -265,6 +288,8 @@ jobs:
 │                 │         │  ┌───────────┐  │
 │  Returns Token  │────────▶│  │  Runner   │  │
 └─────────────────┘         │  │ Container │  │
+                            │  │ (Ubuntu   │  │
+                            │  │  or Win)  │  │
                             │  └───────────┘  │
                             └─────────────────┘
                                     │
@@ -353,7 +378,7 @@ docker version
 docker rm -f gh-runner-<name>
 
 # Or use a different name
-gh runner add repo/owner/repo --docker --name runner-02
+gh runner add owner/repo --docker --name runner-02
 ```
 
 ### Runner shows "Offline" in GitHub
@@ -459,7 +484,7 @@ go mod download
 make build
 
 # Run locally (without installing as extension)
-./gh-runner add repo/owner/repo --docker
+./gh-runner add owner/repo --docker
 ```
 
 ### Testing Your Changes
@@ -472,7 +497,7 @@ make build
 gh extension install .
 
 # Test with a real repository (use a test repo!)
-gh runner add repo/your-test-org/test-repo --docker --name test-runner
+gh runner add your-test-org/test-repo --docker --name test-runner
 
 # Verify in GitHub UI
 # Settings → Actions → Runners
@@ -487,15 +512,19 @@ docker rm -f gh-runner-test-runner
 
 ```
 gh-runner/
-├── main.go           # Main application code
-├── go.mod            # Go module dependencies
-├── go.sum            # Dependency checksums
-├── Makefile          # Build automation
-├── README.md         # This file
-├── QUICKSTART.md     # Quick start guide
-├── LICENSE           # MIT license
-├── examples.sh       # Usage examples
-└── .gitignore        # Git ignore rules
+├── main.go              # Main application code
+├── go.mod               # Go module dependencies
+├── go.sum               # Dependency checksums
+├── Makefile             # Build automation
+├── Dockerfile           # Linux runner Docker image
+├── Dockerfile.windows   # Windows runner Docker image
+├── entrypoint.sh        # Linux container entrypoint
+├── entrypoint.ps1       # Windows container entrypoint
+├── README.md            # This file
+├── QUICKSTART.md        # Quick start guide
+├── LICENSE              # MIT license
+├── examples.sh          # Usage examples
+└── .gitignore           # Git ignore rules
 ```
 
 ### Building
@@ -530,10 +559,12 @@ gh extension remove runner
 - ✅ Add runners to repositories
 - ✅ Add runners to organizations
 - ✅ Add runners to enterprises
-- ✅ Docker deployment
+- ✅ Docker deployment (Linux)
+- ✅ Docker deployment (Windows)
 - ✅ Custom runner names
 - ✅ Custom labels
 - ✅ Manual setup instructions
+- ✅ Official GitHub Actions runner binaries
 
 ### Planned Features
 
@@ -568,19 +599,19 @@ Have an idea? [Open an issue](https://github.com/madkoo/gh-runner/issues/new) or
 ### Q: Can I run multiple runners?
 **A:** Yes! Use different `--name` values for each runner:
 ```bash
-gh runner add repo/owner/repo --docker --name runner-01
-gh runner add repo/owner/repo --docker --name runner-02
+gh runner add owner/repo --docker --name runner-01
+gh runner add owner/repo --docker --name runner-02
 ```
 
 ### Q: How do I update a runner?
 **A:** Currently, remove the old container and create a new one:
 ```bash
 docker rm -f gh-runner-old-name
-gh runner add repo/owner/repo --docker --name new-name
+gh runner add owner/repo --docker --name new-name
 ```
 
 ### Q: Can I use this in production?
-**A:** Yes! The Docker runner uses the official GitHub runner image and follows best practices. For production, consider:
+**A:** Yes! The Docker runner uses official GitHub Actions runner binaries with minimal Ubuntu 24.04 (Linux) or Windows Server Core LTSC2022 base images. For production, consider:
 - Using specific labels for different environments
 - Setting up monitoring
 - Using `--restart unless-stopped` (automatic with this tool)
@@ -593,9 +624,9 @@ gh runner add repo/owner/repo --docker --name new-name
 
 ## Related Projects
 
-- [actions/runner](https://github.com/actions/runner) - Official GitHub Actions runner
-- [myoung34/docker-github-actions-runner](https://github.com/myoung34/docker-github-actions-runner) - Docker image used by this extension
+- [actions/runner](https://github.com/actions/runner) - Official GitHub Actions runner (used by this extension)
 - [actions-runner-controller](https://github.com/actions/actions-runner-controller) - Kubernetes controller for runners
+- [github/gh](https://github.com/cli/cli) - GitHub CLI
 
 ## Support
 
@@ -634,8 +665,9 @@ SOFTWARE.
 
 ## Acknowledgments
 
-- GitHub CLI team for the excellent `gh` tool and Go libraries
-- [@myoung34](https://github.com/myoung34) for the Docker GitHub Actions runner image
+- GitHub CLI team for the excellent `gh` tool and [go-gh](https://github.com/cli/go-gh) library
+- GitHub Actions team for the [official runner](https://github.com/actions/runner) binaries
+- [Cobra](https://github.com/spf13/cobra) for the CLI framework
 - The Go and GitHub Actions communities
 
 ## Star History
